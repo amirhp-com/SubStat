@@ -73,12 +73,13 @@ struct SettingsWindowView: View {
                 }
 
                 Section("Menubar Icon") {
-                    HStack {
+                    HStack(alignment: .center) {
                         Text("Icon")
                         Spacer()
                         TextField("", text: $settings.menuBarIcon)
                             .textFieldStyle(.roundedBorder)
-                            .frame(width: 50)
+                            .frame(width: 44, height: 24)
+                            .font(.system(size: 13))
                         Button(action: { settings.menuBarIcon = "⚡" }) {
                             Image(systemName: "arrow.counterclockwise")
                                 .font(.system(size: 10))
@@ -87,21 +88,23 @@ struct SettingsWindowView: View {
                         .controlSize(.small)
                         .help("Reset to default")
                     }
+                    .frame(height: 28)
 
-                    HStack {
+                    HStack(alignment: .center) {
                         Text("Quick Pick")
                         Spacer()
-                        HStack(spacing: 6) {
+                        HStack(spacing: 4) {
                             ForEach(["⚡", "🔒", "📡", "🌐", "🛜", "▲", "◆", "●"], id: \.self) { emoji in
                                 Text(emoji)
-                                    .font(.system(size: 16))
-                                    .padding(4)
+                                    .font(.system(size: 14))
+                                    .frame(width: 26, height: 26)
                                     .background(settings.menuBarIcon == emoji ? Color.accentColor.opacity(0.3) : Color.clear)
                                     .cornerRadius(4)
                                     .onTapGesture { settings.menuBarIcon = emoji }
                             }
                         }
                     }
+                    .frame(height: 28)
                 }
 
                 Section("Menubar Appearance") {

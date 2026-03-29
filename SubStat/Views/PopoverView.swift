@@ -138,65 +138,40 @@ struct PopoverContentView: View {
             Divider()
                 .padding(.horizontal, 12)
 
-            // Footer
-            HStack {
-                HStack(spacing: 4) {
-                    Image(systemName: "gear")
-                    Text("Settings")
-                    Text("(\u{2318},)")
-                        .foregroundColor(Color(nsColor: .tertiaryLabelColor))
-                }
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                .background(Color.white.opacity(0.001))
-                .onTapGesture(perform: onOpenSettings)
-
-                Spacer()
-
-                HStack(spacing: 4) {
-                    Image(systemName: "info.circle")
-                    Text("About")
-                }
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                .background(Color.white.opacity(0.001))
-                .onTapGesture(perform: onOpenAbout)
-
-                Spacer()
-
-                HStack(spacing: 4) {
-                    Image(systemName: "xmark.circle")
-                    Text("Quit")
-                }
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                .background(Color.white.opacity(0.001))
-                .onTapGesture(perform: onQuit)
+            // Footer buttons
+            HStack(spacing: 8) {
+                footerBtn(icon: "gear", label: "Settings", action: onOpenSettings)
+                footerBtn(icon: "info.circle", label: "About", action: onOpenAbout)
+                footerBtn(icon: "xmark.circle", label: "Quit", action: onQuit)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
 
             // App info footer
-            HStack(spacing: 0) {
-                Text("\(AppConstants.appName)")
-                    .fontWeight(.medium)
-                Text(" v\(AppConstants.appVersion)")
-                Text(" · by ")
-                Text(AppConstants.developer)
-                    .foregroundColor(.accentColor)
-                    .onTapGesture {
-                        NSWorkspace.shared.open(URL(string: AppConstants.websiteURL)!)
-                    }
+            VStack(spacing: 3) {
+                HStack(spacing: 0) {
+                    Text(AppConstants.appName)
+                        .fontWeight(.semibold)
+                    Text(" v\(AppConstants.appVersion)")
+                }
+                .font(.system(size: 10))
+                .foregroundColor(.secondary)
+
+                HStack(spacing: 0) {
+                    Text("by ")
+                    Text(AppConstants.developer)
+                        .foregroundColor(.accentColor)
+                        .onTapGesture {
+                            NSWorkspace.shared.open(URL(string: AppConstants.websiteURL)!)
+                        }
+                        .onHover { h in
+                            if h { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                        }
+                }
+                .font(.system(size: 10))
+                .foregroundColor(.secondary)
             }
-            .font(.system(size: 9))
-            .foregroundColor(Color(nsColor: .tertiaryLabelColor))
-            .padding(.bottom, 6)
+            .padding(.bottom, 10)
         }
         .frame(width: 320)
     }
@@ -256,6 +231,26 @@ struct PopoverContentView: View {
             }
             StatRowView(label: "Expires", value: info.formattedExpiryDate)
         }
+    }
+
+    // MARK: - Footer Button
+
+    private func footerBtn(icon: String, label: String, action: @escaping () -> Void) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+            Text(label)
+        }
+        .font(.system(size: 11))
+        .foregroundColor(.secondary)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.white.opacity(0.001))
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 0.5)
+        )
+        .cornerRadius(6)
+        .onTapGesture(perform: action)
     }
 
     // MARK: - Color Helpers

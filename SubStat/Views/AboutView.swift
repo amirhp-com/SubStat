@@ -5,10 +5,14 @@ struct AboutWindowView: View {
         VStack(spacing: 14) {
             Spacer()
 
-            Image(nsImage: NSApp.applicationIconImage)
-                .resizable()
-                .frame(width: 64, height: 64)
-                .cornerRadius(14)
+            HStack {
+                Spacer()
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 64, height: 64)
+                    .cornerRadius(14)
+                Spacer()
+            }
 
             Text(AppConstants.appName)
                 .font(.system(size: 22, weight: .bold))
