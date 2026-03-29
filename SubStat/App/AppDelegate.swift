@@ -11,7 +11,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private var cancellables = Set<AnyCancellable>()
     private var eventMonitor: Any?
 
+    @objc func openSettingsFromMenu() {
+        openSettings()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Override Cmd+, to open our settings window
+        let settingsItem = NSApp.mainMenu?.item(withTitle: "SubStat")?.submenu?.item(withTitle: "Settings…")
+            ?? NSApp.mainMenu?.items.flatMap { $0.submenu?.items ?? [] }.first { $0.title.contains("Settings") || $0.title.contains("Preferences") }
+        settingsItem?.target = self
+        settingsItem?.action = #selector(openSettingsFromMenu)
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = statusItem.button {
