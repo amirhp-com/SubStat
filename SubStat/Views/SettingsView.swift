@@ -73,22 +73,28 @@ struct SettingsWindowView: View {
                 }
 
                 Section("Menubar Icon") {
-                    HStack(alignment: .center) {
+                    HStack(alignment: .center, spacing: 8) {
                         Text("Icon")
                         Spacer()
-                        TextField("", text: $settings.menuBarIcon)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 44, height: 24)
-                            .font(.system(size: 13))
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                                .frame(width: 36, height: 28)
+                            TextField("", text: $settings.menuBarIcon)
+                                .textFieldStyle(.plain)
+                                .font(.system(size: 14))
+                                .multilineTextAlignment(.center)
+                                .frame(width: 36, height: 28)
+                        }
                         Button(action: { settings.menuBarIcon = "⚡" }) {
                             Image(systemName: "arrow.counterclockwise")
-                                .font(.system(size: 10))
+                                .font(.system(size: 11))
+                                .frame(width: 28, height: 28)
                         }
                         .buttonStyle(.bordered)
-                        .controlSize(.small)
+                        .controlSize(.regular)
                         .help("Reset to default")
                     }
-                    .frame(height: 28)
 
                     HStack(alignment: .center) {
                         Text("Quick Pick")
