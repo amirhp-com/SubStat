@@ -63,6 +63,31 @@ struct SettingsWindowView: View {
                 }
             }
 
+            Section("Menubar Icon") {
+                HStack {
+                    Text("Icon Emoji")
+                    Spacer()
+                    TextField("⚡", text: $settings.menuBarIcon)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 50)
+                }
+
+                HStack {
+                    Text("Quick Pick")
+                    Spacer()
+                    HStack(spacing: 6) {
+                        ForEach(["⚡", "🔒", "📡", "🌐", "🛜", "▲", "◆", "●"], id: \.self) { emoji in
+                            Text(emoji)
+                                .font(.system(size: 16))
+                                .padding(4)
+                                .background(settings.menuBarIcon == emoji ? Color.accentColor.opacity(0.3) : Color.clear)
+                                .cornerRadius(4)
+                                .onTapGesture { settings.menuBarIcon = emoji }
+                        }
+                    }
+                }
+            }
+
             Section("Menubar Appearance") {
                 HStack {
                     Text("Font")
@@ -172,7 +197,8 @@ struct SettingsWindowView: View {
 
     private var previewText: String {
         let sep = settings.separator
-        return settings.orientation == .vertical ? "12d\n4.72GB" : "12d\(sep)4.72GB"
+        let icon = settings.displayMode == .iconDaysAndGB ? settings.menuBarIcon : ""
+        return settings.orientation == .vertical ? "\(icon)12d\n4.72GB" : "\(icon)12d\(sep)4.72GB"
     }
 
     private var previewFont: Font {

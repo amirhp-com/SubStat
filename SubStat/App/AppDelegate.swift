@@ -93,7 +93,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         case .gbOnly:
             text = data
         case .iconDaysAndGB:
-            text = orientation == .vertical ? "⚡\(days)\n\(data)" : "⚡\(days)\(sep)\(data)"
+            let icon = settings.menuBarIcon
+            text = orientation == .vertical ? "\(icon)\(days)\n\(data)" : "\(icon)\(days)\(sep)\(data)"
         }
 
         let fontSize = CGFloat(settings.menuBarFontSize)

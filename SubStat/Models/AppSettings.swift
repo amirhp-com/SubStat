@@ -32,6 +32,7 @@ class AppSettings: ObservableObject {
     @AppStorage("dataUnitRaw") var dataUnitRaw: String = DataUnit.auto.rawValue
     @AppStorage("separator") var separator: String = " · "
     @AppStorage("orientationRaw") var orientationRaw: String = MenuBarOrientation.horizontal.rawValue
+    @AppStorage("menuBarIcon") var menuBarIcon: String = "⚡"
 
     // Menubar appearance
     @AppStorage("menuBarFontFamily") var menuBarFontFamily: String = ""  // empty = system default
