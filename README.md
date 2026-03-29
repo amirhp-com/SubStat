@@ -19,7 +19,7 @@ A lightweight native macOS menubar app that monitors your VLESS subscription usa
 
 ## Download
 
-Download the latest `.dmg` installer from the [Releases](https://github.com/AmirhpCom/SubStat/releases) page.
+Download the latest `.dmg` installer from the [Releases](https://github.com/amirhp-com/SubStat/releases) page.
 
 ## Build from Source
 

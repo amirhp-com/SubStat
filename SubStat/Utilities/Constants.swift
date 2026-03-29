@@ -5,7 +5,7 @@ enum AppConstants {
     static let appName = "SubStat"
     static let developer = "AmirhpCom"
     static let websiteURL = "https://amirhp.com/landing"
-    static let githubURL = "https://github.com/AmirhpCom/SubStat"
+    static let githubURL = "https://github.com/amirhp-com/SubStat"
     static let license = "MIT License"
 
     static var appVersion: String {
