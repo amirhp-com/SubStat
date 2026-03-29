@@ -34,9 +34,12 @@ class AppSettings: ObservableObject {
     @AppStorage("orientationRaw") var orientationRaw: String = MenuBarOrientation.horizontal.rawValue
 
     // Menubar appearance
+    @AppStorage("menuBarFontFamily") var menuBarFontFamily: String = ""  // empty = system default
     @AppStorage("menuBarFontSize") var menuBarFontSize: Double = 12
     @AppStorage("menuBarUseCustomColor") var menuBarUseCustomColor: Bool = false
-    @AppStorage("menuBarColorHex") var menuBarColorHex: String = "#FFFFFF"
+    @AppStorage("menuBarColorR") var menuBarColorR: Double = 1.0
+    @AppStorage("menuBarColorG") var menuBarColorG: Double = 1.0
+    @AppStorage("menuBarColorB") var menuBarColorB: Double = 1.0
 
     // System
     @AppStorage("launchAtLogin") var launchAtLogin: Bool = false
@@ -59,5 +62,32 @@ class AppSettings: ObservableObject {
     var orientation: MenuBarOrientation {
         get { MenuBarOrientation(rawValue: orientationRaw) ?? .horizontal }
         set { orientationRaw = newValue.rawValue }
+    }
+
+    var menuBarColor: Color {
+        get { Color(red: menuBarColorR, green: menuBarColorG, blue: menuBarColorB) }
+        set {
+            if let components = NSColor(newValue).cgColor.components, components.count >= 3 {
+                menuBarColorR = Double(components[0])
+                menuBarColorG = Double(components[1])
+                menuBarColorB = Double(components[2])
+            }
+        }
+    }
+
+    var menuBarNSColor: NSColor {
+        NSColor(red: menuBarColorR, green: menuBarColorG, blue: menuBarColorB, alpha: 1.0)
+    }
+
+    func restoreDefaults() {
+        let domain = Bundle.main.bundleIdentifier ?? "com.amirhpcom.SubStat"
+        let url = subscriptionURL
+        let name = subscriptionName
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+        // Keep subscription URL and name
+        subscriptionURL = url
+        subscriptionName = name
+        objectWillChange.send()
     }
 }

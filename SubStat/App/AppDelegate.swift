@@ -97,7 +97,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         }
 
         let fontSize = CGFloat(settings.menuBarFontSize)
-        let font = NSFont.monospacedDigitSystemFont(ofSize: fontSize, weight: .medium)
+        let fontFamily = settings.menuBarFontFamily
+        let font: NSFont
+        if !fontFamily.isEmpty, let customFont = NSFont(name: fontFamily, size: fontSize) {
+            font = customFont
+        } else {
+            font = NSFont.monospacedDigitSystemFont(ofSize: fontSize, weight: .medium)
+        }
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
@@ -114,7 +120,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         ]
 
         if settings.menuBarUseCustomColor {
-            attrs[.foregroundColor] = NSColor(hex: settings.menuBarColorHex) ?? NSColor.labelColor
+            attrs[.foregroundColor] = settings.menuBarNSColor
         }
 
         button.attributedTitle = NSAttributedString(string: text, attributes: attrs)
