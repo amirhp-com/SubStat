@@ -1,22 +1,63 @@
 import SwiftUI
 
-struct PopoverView: View {
-    @EnvironmentObject var viewModel: SubscriptionViewModel
-    @EnvironmentObject var settings: AppSettings
+struct RefreshButton: View {
+    let isLoading: Bool
+    let action: () -> Void
+    @State private var rotation: Double = 0
+
+    var body: some View {
+        Image(systemName: "arrow.clockwise")
+            .font(.system(size: 12))
+            .foregroundColor(.secondary)
+            .rotationEffect(.degrees(rotation))
+            .frame(width: 28, height: 28)
+            .background(Color.primary.opacity(0.001))
+            .onTapGesture(perform: action)
+            .onChange(of: isLoading) { loading in
+                if loading {
+                    withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
+                        rotation = 360
+                    }
+                } else {
+                    withAnimation(.default) {
+                        rotation = 0
+                    }
+                }
+            }
+    }
+}
+
+struct PopoverContentView: View {
+    @ObservedObject var viewModel: SubscriptionViewModel
+    @ObservedObject var settings: AppSettings
+    var onOpenSettings: () -> Void
+    var onOpenAbout: () -> Void
+    var onQuit: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             // Header
-            headerSection
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 12)
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(settings.subscriptionName)
+                        .font(.system(size: 14, weight: .semibold))
+                    Text("Updated \(viewModel.lastUpdatedText)")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                RefreshButton(isLoading: viewModel.isLoading) {
+                    viewModel.refresh(urlString: settings.subscriptionURL)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 12)
 
             Divider()
                 .padding(.horizontal, 12)
 
             if let info = viewModel.subscriptionInfo {
-                // Data Usage
                 dataSection(info: info)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
@@ -24,59 +65,140 @@ struct PopoverView: View {
                 Divider()
                     .padding(.horizontal, 12)
 
-                // Time
                 timeSection(info: info)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
             } else if viewModel.isLoading {
-                loadingSection
-                    .padding(24)
+                VStack(spacing: 8) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Loading subscription data...")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(24)
             } else if settings.subscriptionURL.isEmpty {
-                emptyStateSection
-                    .padding(24)
+                VStack(spacing: 10) {
+                    Image(systemName: "link.badge.plus")
+                        .font(.system(size: 28))
+                        .foregroundColor(.secondary)
+                    Text("No Subscription URL")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("Add your VLESS subscription URL\nin Settings to start monitoring.")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("Open Settings")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 6)
+                        .background(Color.accentColor)
+                        .cornerRadius(6)
+                        .onTapGesture(perform: onOpenSettings)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(24)
             } else if let error = viewModel.errorMessage {
-                errorSection(message: error)
-                    .padding(24)
+                VStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 24))
+                        .foregroundColor(.orange)
+                    Text("Failed to load data")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(error)
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 8)
+                    if let detail = viewModel.errorDetail {
+                        Text(detail)
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundColor(Color(nsColor: .tertiaryLabelColor))
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, 8)
+                    }
+                    Text("Check Settings")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.accentColor)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 5)
+                        .background(Color.accentColor.opacity(0.15))
+                        .cornerRadius(5)
+                        .onTapGesture(perform: onOpenSettings)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(24)
             }
 
             Divider()
                 .padding(.horizontal, 12)
 
             // Footer
-            footerSection
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-        }
-        .frame(width: 280)
-        .background(.ultraThinMaterial)
-        .onAppear {
-            viewModel.startRefreshing(settings: settings)
-        }
-    }
+            HStack {
+                HStack(spacing: 4) {
+                    Image(systemName: "gear")
+                    Text("Settings")
+                    Text("(\u{2318},)")
+                        .foregroundColor(Color(nsColor: .tertiaryLabelColor))
+                }
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 8)
+                .background(Color.white.opacity(0.001))
+                .onTapGesture(perform: onOpenSettings)
 
-    // MARK: - Header
+                Spacer()
 
-    private var headerSection: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(settings.subscriptionName)
-                    .font(.system(size: 14, weight: .semibold))
-                Text("Updated \(viewModel.lastUpdatedText)")
-                    .font(.system(size: 10))
-                    .foregroundColor(.secondary)
+                HStack(spacing: 4) {
+                    Image(systemName: "info.circle")
+                    Text("About")
+                }
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 8)
+                .background(Color.white.opacity(0.001))
+                .onTapGesture(perform: onOpenAbout)
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Image(systemName: "xmark.circle")
+                    Text("Quit")
+                }
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 8)
+                .background(Color.white.opacity(0.001))
+                .onTapGesture(perform: onQuit)
             }
-            Spacer()
-            Button(action: {
-                viewModel.refresh(urlString: settings.subscriptionURL)
-            }) {
-                Image(systemName: viewModel.isLoading ? "arrow.trianglehead.2.counterclockwise" : "arrow.clockwise")
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .rotationEffect(.degrees(viewModel.isLoading ? 360 : 0))
-                    .animation(viewModel.isLoading ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: viewModel.isLoading)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+
+            // App info footer
+            HStack(spacing: 0) {
+                Text("\(AppConstants.appName)")
+                    .fontWeight(.medium)
+                Text(" v\(AppConstants.appVersion)")
+                Text(" · by ")
+                Text(AppConstants.developer)
+                    .foregroundColor(.accentColor)
+                    .onTapGesture {
+                        NSWorkspace.shared.open(URL(string: AppConstants.websiteURL)!)
+                    }
             }
-            .buttonStyle(.plain)
+            .font(.system(size: 9))
+            .foregroundColor(Color(nsColor: .tertiaryLabelColor))
+            .padding(.bottom, 6)
         }
+        .frame(width: 320)
     }
 
     // MARK: - Data Section
@@ -102,7 +224,7 @@ struct PopoverView: View {
             StatRowView(
                 label: "Remaining",
                 value: info.remainedDisplay,
-                valueColor: info.usageRatio > 0.85 ? .red : .green
+                valueColor: usageColor(ratio: info.usageRatio)
             )
         }
     }
@@ -129,87 +251,24 @@ struct PopoverView: View {
                 StatRowView(
                     label: "Days Remaining",
                     value: "\(days)",
-                    valueColor: days < 5 ? .red : (days < 10 ? .orange : .primary)
+                    valueColor: daysColor(days: days)
                 )
             }
             StatRowView(label: "Expires", value: info.formattedExpiryDate)
         }
     }
 
-    // MARK: - States
+    // MARK: - Color Helpers
 
-    private var loadingSection: some View {
-        VStack(spacing: 8) {
-            ProgressView()
-                .scaleEffect(0.8)
-            Text("Loading subscription data...")
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity)
+    private func usageColor(ratio: Double) -> Color {
+        if ratio > 0.85 { return Color(red: 0.9, green: 0.2, blue: 0.15) }
+        if ratio > 0.6 { return .orange }
+        return Color(red: 0.2, green: 0.7, blue: 1.0)
     }
 
-    private var emptyStateSection: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "link.badge.plus")
-                .font(.system(size: 24))
-                .foregroundColor(.secondary)
-            Text("No subscription URL configured")
-                .font(.system(size: 12, weight: .medium))
-            Text("Open Settings to add your subscription URL")
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private func errorSection(message: String) -> some View {
-        VStack(spacing: 8) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 24))
-                .foregroundColor(.orange)
-            Text("Failed to load data")
-                .font(.system(size: 12, weight: .medium))
-            Text(message)
-                .font(.system(size: 10))
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    // MARK: - Footer
-
-    private var footerSection: some View {
-        HStack {
-            Button(action: openSettings) {
-                Label("Settings", systemImage: "gear")
-                    .font(.system(size: 11))
-            }
-            .buttonStyle(.plain)
-            .foregroundColor(.secondary)
-
-            Spacer()
-
-            Button(action: {
-                NSApplication.shared.terminate(nil)
-            }) {
-                Label("Quit", systemImage: "xmark.circle")
-                    .font(.system(size: 11))
-            }
-            .buttonStyle(.plain)
-            .foregroundColor(.secondary)
-        }
-    }
-
-    private func openSettings() {
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        // Fallback for older macOS versions
-        if #available(macOS 14.0, *) {
-            // showSettingsWindow is available
-        } else {
-            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-        }
+    private func daysColor(days: Int) -> Color {
+        if days < 5 { return Color(red: 0.9, green: 0.2, blue: 0.15) }
+        if days < 15 { return .orange }
+        return Color(red: 0.2, green: 0.7, blue: 1.0)
     }
 }

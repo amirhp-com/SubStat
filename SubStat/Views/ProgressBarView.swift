@@ -2,8 +2,6 @@ import SwiftUI
 
 struct ProgressBarView: View {
     let value: Double
-    var color: Color = .blue
-    var backgroundColor: Color = Color.gray.opacity(0.2)
     var height: CGFloat = 8
 
     private var clampedValue: Double {
@@ -12,11 +10,11 @@ struct ProgressBarView: View {
 
     private var barColor: LinearGradient {
         if clampedValue > 0.85 {
-            return LinearGradient(colors: [.red, .orange], startPoint: .leading, endPoint: .trailing)
-        } else if clampedValue > 0.7 {
-            return LinearGradient(colors: [.orange, .yellow], startPoint: .leading, endPoint: .trailing)
+            return LinearGradient(colors: [Color(red: 0.9, green: 0.2, blue: 0.15), Color(red: 1.0, green: 0.3, blue: 0.2)], startPoint: .leading, endPoint: .trailing)
+        } else if clampedValue > 0.6 {
+            return LinearGradient(colors: [Color.orange, Color(red: 1.0, green: 0.6, blue: 0.1)], startPoint: .leading, endPoint: .trailing)
         } else {
-            return LinearGradient(colors: [Color(nsColor: .systemTeal), Color(nsColor: .systemBlue)], startPoint: .leading, endPoint: .trailing)
+            return LinearGradient(colors: [Color(red: 0.1, green: 0.4, blue: 0.8), Color(red: 0.2, green: 0.6, blue: 1.0)], startPoint: .leading, endPoint: .trailing)
         }
     }
 
@@ -24,7 +22,7 @@ struct ProgressBarView: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: height / 2)
-                    .fill(backgroundColor)
+                    .fill(Color.gray.opacity(0.2))
                     .frame(height: height)
 
                 RoundedRectangle(cornerRadius: height / 2)

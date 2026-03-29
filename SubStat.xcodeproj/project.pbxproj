@@ -24,6 +24,8 @@
 		A10015 /* ByteFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10015; };
 		A10016 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10016; };
 		A10017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10017; };
+		A10018 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10020; };
+		A10019 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = B10021; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,8 @@
 		B10017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10018 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10019 /* SubStat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SubStat.entitlements; sourceTree = "<group>"; };
+		B10020 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B10021 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AppIcon.icns; path = Resources/AppIcon.icns; sourceTree = "<group>"; };
 		C10001 /* SubStat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SubStat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -78,6 +82,7 @@
 				E10007 /* Views */,
 				E10008 /* Utilities */,
 				B10017 /* Assets.xcassets */,
+				B10021 /* AppIcon.icns */,
 				B10019 /* SubStat.entitlements */,
 			);
 			path = SubStat;
@@ -87,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				B10001 /* SubStatApp.swift */,
+				B10020 /* AppDelegate.swift */,
 				B10018 /* Info.plist */,
 			);
 			path = App;
@@ -209,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10017 /* Assets.xcassets in Resources */,
+				A10019 /* AppIcon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +242,7 @@
 				A10014 /* AboutView.swift in Sources */,
 				A10015 /* ByteFormatter.swift in Sources */,
 				A10016 /* Constants.swift in Sources */,
+				A10018 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,7 +373,7 @@
 				CODE_SIGN_ENTITLEMENTS = SubStat/SubStat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -377,7 +385,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.SubStat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -393,7 +401,7 @@
 				CODE_SIGN_ENTITLEMENTS = SubStat/SubStat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -405,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.SubStat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

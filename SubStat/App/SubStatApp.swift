@@ -2,23 +2,12 @@ import SwiftUI
 
 @main
 struct SubStatApp: App {
-    @StateObject private var settings = AppSettings()
-    @StateObject private var viewModel = SubscriptionViewModel()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        MenuBarExtra {
-            PopoverView()
-                .environmentObject(viewModel)
-                .environmentObject(settings)
-        } label: {
-            MenuBarLabel(viewModel: viewModel, settings: settings)
-        }
-        .menuBarExtraStyle(.window)
-
+        // Empty scene — everything is managed by AppDelegate
         Settings {
-            SettingsView()
-                .environmentObject(settings)
-                .environmentObject(viewModel)
+            EmptyView()
         }
     }
 }
