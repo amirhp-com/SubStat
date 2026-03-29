@@ -73,27 +73,14 @@ struct SettingsWindowView: View {
                 }
 
                 Section("Menubar Icon") {
-                    HStack(alignment: .center, spacing: 8) {
+                    HStack {
                         Text("Icon")
                         Spacer()
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.gray.opacity(0.4), lineWidth: 1)
-                                .frame(width: 36, height: 28)
-                            TextField("", text: $settings.menuBarIcon)
-                                .textFieldStyle(.plain)
-                                .font(.system(size: 14))
-                                .multilineTextAlignment(.center)
-                                .frame(width: 36, height: 28)
-                        }
-                        Button(action: { settings.menuBarIcon = "⚡" }) {
-                            Image(systemName: "arrow.counterclockwise")
-                                .font(.system(size: 11))
-                                .frame(width: 28, height: 28)
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.regular)
-                        .help("Reset to default")
+                        TextField("", text: $settings.menuBarIcon)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 60)
+                        Button("Reset") { settings.menuBarIcon = "⚡" }
+                            .controlSize(.small)
                     }
 
                     HStack(alignment: .center) {
