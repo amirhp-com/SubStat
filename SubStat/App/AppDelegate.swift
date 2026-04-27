@@ -97,13 +97,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         switch mode {
         case .daysAndGB:
             text = orientation == .vertical ? "\(days)\n\(data)" : "\(days)\(sep)\(data)"
+        case .gbAndDays:
+            text = orientation == .vertical ? "\(data)\n\(days)" : "\(data)\(sep)\(days)"
         case .daysOnly:
             text = days
         case .gbOnly:
             text = data
+        case .iconDays:
+            let icon = settings.menuBarIcon
+            text = orientation == .vertical ? "\(icon)\n\(days)" : "\(icon)\(days)"
+        case .iconGB:
+            let icon = settings.menuBarIcon
+            text = orientation == .vertical ? "\(icon)\n\(data)" : "\(icon)\(data)"
         case .iconDaysAndGB:
             let icon = settings.menuBarIcon
             text = orientation == .vertical ? "\(icon)\(days)\n\(data)" : "\(icon)\(days)\(sep)\(data)"
+        case .iconGBAndDays:
+            let icon = settings.menuBarIcon
+            text = orientation == .vertical ? "\(icon)\(data)\n\(days)" : "\(icon)\(data)\(sep)\(days)"
         }
 
         let fontSize = CGFloat(settings.menuBarFontSize)

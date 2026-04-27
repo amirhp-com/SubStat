@@ -2,6 +2,9 @@ import Foundation
 import SwiftUI
 
 enum RefreshInterval: Int, CaseIterable, Identifiable {
+    case thirtySeconds = 30
+    case twoMinutes = 120
+    case fiveMinutes = 300
     case tenMinutes = 600
     case thirtyMinutes = 1800
     case oneHour = 3600
@@ -11,6 +14,9 @@ enum RefreshInterval: Int, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
+        case .thirtySeconds: return "Every 30 seconds"
+        case .twoMinutes: return "Every 2 minutes"
+        case .fiveMinutes: return "Every 5 minutes"
         case .tenMinutes: return "Every 10 minutes"
         case .thirtyMinutes: return "Every 30 minutes"
         case .oneHour: return "Every hour"

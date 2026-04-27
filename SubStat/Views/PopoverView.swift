@@ -148,15 +148,13 @@ struct PopoverContentView: View {
             .padding(.vertical, 8)
 
             // App info footer
-            VStack(spacing: 3) {
+            HStack(spacing: 6) {
                 HStack(spacing: 0) {
                     Text(AppConstants.appName)
                         .fontWeight(.semibold)
                     Text(" v\(AppConstants.appVersion)")
                 }
-                .font(.system(size: 10))
-                .foregroundColor(.secondary)
-
+                Text("·").opacity(0.6)
                 HStack(spacing: 0) {
                     Text("by ")
                     Text(AppConstants.developer)
@@ -168,9 +166,22 @@ struct PopoverContentView: View {
                             if h { NSCursor.pointingHand.push() } else { NSCursor.pop() }
                         }
                 }
-                .font(.system(size: 10))
-                .foregroundColor(.secondary)
+                Text("·").opacity(0.6)
+                HStack(spacing: 3) {
+                    Image(systemName: "chevron.left.forwardslash.chevron.right")
+                        .font(.system(size: 9))
+                    Text("GitHub")
+                }
+                .foregroundColor(.accentColor)
+                .onTapGesture {
+                    NSWorkspace.shared.open(URL(string: AppConstants.githubURL)!)
+                }
+                .onHover { h in
+                    if h { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                }
             }
+            .font(.system(size: 10))
+            .foregroundColor(.secondary)
             .padding(.bottom, 10)
         }
         .frame(width: 320)

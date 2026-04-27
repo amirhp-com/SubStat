@@ -33,7 +33,7 @@ struct SettingsWindowView: View {
                         get: { settings.displayMode },
                         set: { settings.displayMode = $0 }
                     )) {
-                        ForEach(MenuBarDisplayMode.allCases) { mode in
+                        ForEach(MenuBarDisplayMode.pickerCases) { mode in
                             Text(mode.displayName).tag(mode)
                         }
                     }
@@ -238,7 +238,9 @@ struct SettingsWindowView: View {
 
     private var previewText: String {
         let sep = settings.separator
-        let icon = settings.displayMode == .iconDaysAndGB ? settings.menuBarIcon : ""
+        let mode = settings.displayMode
+        let useIcon = mode == .iconDaysAndGB || mode == .iconDays || mode == .iconGB || mode == .iconGBAndDays
+        let icon = useIcon ? settings.menuBarIcon : ""
         return settings.orientation == .vertical ? "\(icon)12d\n4.72GB" : "\(icon)12d\(sep)4.72GB"
     }
 

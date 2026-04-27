@@ -1,20 +1,32 @@
 import Foundation
 
 enum MenuBarDisplayMode: String, CaseIterable, Identifiable {
-    case daysAndGB = "daysAndGB"
-    case daysOnly = "daysOnly"
     case gbOnly = "gbOnly"
+    case daysOnly = "daysOnly"
+    case gbAndDays = "gbAndDays"
+    case daysAndGB = "daysAndGB"
+    case iconGB = "iconGB"
+    case iconDays = "iconDays"
+    case iconGBAndDays = "iconGBAndDays"
     case iconDaysAndGB = "iconDaysAndGB"
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
-        case .daysAndGB: return "Days + Data"
-        case .daysOnly: return "Days only"
         case .gbOnly: return "Data only"
-        case .iconDaysAndGB: return "Icon + Days + Data"
+        case .daysOnly: return "Days only"
+        case .gbAndDays: return "Data + Days"
+        case .daysAndGB: return "Days + Data"
+        case .iconGB: return "Icon + Data"
+        case .iconDays: return "Icon + Day"
+        case .iconGBAndDays: return "Icon + Data + Day"
+        case .iconDaysAndGB: return "Icon + Day + Data"
         }
+    }
+
+    static var pickerCases: [MenuBarDisplayMode] {
+        [.gbOnly, .daysOnly, .gbAndDays, .iconGB, .iconDays, .iconGBAndDays, .iconDaysAndGB]
     }
 }
 
