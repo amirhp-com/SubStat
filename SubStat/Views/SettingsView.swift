@@ -6,6 +6,9 @@ struct SettingsWindowView: View {
     @State private var showRestoreAlert = false
     @State private var selectedColor: Color = .white
     @State private var showSavedNotification = false
+    @State private var resolverStatus: String = ""
+    @State private var resolverIsError: Bool = false
+    @State private var resolverInProgress: Bool = false
 
     var body: some View {
         ZStack {
@@ -162,6 +165,81 @@ struct SettingsWindowView: View {
                     ))
                 }
 
+                Section("IP Resolver (VPN Bypass)") {
+                    Toggle("Enable Manual IP Resolver", isOn: $settings.enableIPResolver)
+
+                    if settings.enableIPResolver {
+                        let host = IPResolverService.extractHost(from: settings.subscriptionURL) ?? "—"
+
+                        HStack {
+                            Text("Site host")
+                            Spacer()
+                            Text(host)
+                                .font(.system(size: 11, design: .monospaced))
+                                .foregroundColor(.secondary)
+                                .textSelection(.enabled)
+                        }
+
+                        HStack {
+                            Text("Site IP")
+                            Spacer()
+                            TextField("e.g. 2.145.24.35", text: $settings.manualSiteIP)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 180)
+                        }
+
+                        HStack {
+                            Text("Gateway IP")
+                            Spacer()
+                            TextField("Auto-detect", text: $settings.manualGatewayIP)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 180)
+                            Button(action: {
+                                if let gw = IPResolverService.detectGateway() {
+                                    settings.manualGatewayIP = gw
+                                    resolverStatus = "Detected gateway: \(gw)"
+                                    resolverIsError = false
+                                } else {
+                                    resolverStatus = "Could not detect gateway. Enter one manually."
+                                    resolverIsError = true
+                                }
+                            }) {
+                                Image(systemName: "arrow.clockwise")
+                                    .font(.system(size: 10))
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .help("Auto-detect default gateway")
+                        }
+
+                        Text("Modifies /etc/hosts and adds a host route through the local gateway. macOS will prompt for your administrator password.")
+                            .font(.system(size: 10))
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        HStack {
+                            Button("Apply Resolver") {
+                                applyIPResolver(host: host)
+                            }
+                            .disabled(resolverInProgress || host == "—" || settings.manualSiteIP.isEmpty)
+
+                            Button("Remove Resolver") {
+                                removeIPResolver()
+                            }
+                            .disabled(resolverInProgress || settings.ipResolverLastHost.isEmpty)
+
+                            Spacer()
+                        }
+
+                        if !resolverStatus.isEmpty {
+                            Text(resolverStatus)
+                                .font(.system(size: 10))
+                                .foregroundColor(resolverIsError ? .red : .green)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+
                 Section {
                     HStack {
                         Button("Restore Defaults") {
@@ -223,6 +301,61 @@ struct SettingsWindowView: View {
     }
 
     // MARK: - Helpers
+
+    private func applyIPResolver(host: String) {
+        guard host != "—" else {
+            resolverStatus = "Could not extract host from subscription URL."
+            resolverIsError = true
+            return
+        }
+        var gateway = settings.manualGatewayIP.trimmingCharacters(in: .whitespaces)
+        if gateway.isEmpty {
+            if let auto = IPResolverService.detectGateway() {
+                gateway = auto
+                settings.manualGatewayIP = auto
+            } else {
+                resolverStatus = "No gateway detected. Enter one manually."
+                resolverIsError = true
+                return
+            }
+        }
+        let ip = settings.manualSiteIP.trimmingCharacters(in: .whitespaces)
+        resolverInProgress = true
+        resolverStatus = "Applying…"
+        resolverIsError = false
+        IPResolverService.apply(host: host, ip: ip, gateway: gateway) { result in
+            resolverInProgress = false
+            switch result {
+            case .success:
+                settings.ipResolverLastHost = host
+                resolverStatus = "Applied · \(host) → \(ip) via \(gateway)"
+                resolverIsError = false
+            case .failure(let error):
+                resolverStatus = error.localizedDescription
+                resolverIsError = true
+            }
+        }
+    }
+
+    private func removeIPResolver() {
+        let host = settings.ipResolverLastHost
+        guard !host.isEmpty else { return }
+        resolverInProgress = true
+        resolverStatus = "Removing…"
+        resolverIsError = false
+        IPResolverService.remove(host: host) { result in
+            resolverInProgress = false
+            switch result {
+            case .success:
+                settings.ipResolverLastHost = ""
+                resolverStatus = "Removed."
+                resolverIsError = false
+            case .failure(let error):
+                resolverStatus = error.localizedDescription
+                resolverIsError = true
+            }
+        }
+    }
 
     private var availableFonts: [String] {
         let favorites = [

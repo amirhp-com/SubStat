@@ -51,6 +51,12 @@ class AppSettings: ObservableObject {
     // System
     @AppStorage("launchAtLogin") var launchAtLogin: Bool = false
 
+    // IP Resolver (VPN bypass)
+    @AppStorage("enableIPResolver") var enableIPResolver: Bool = false
+    @AppStorage("manualSiteIP") var manualSiteIP: String = ""
+    @AppStorage("manualGatewayIP") var manualGatewayIP: String = ""
+    @AppStorage("ipResolverLastHost") var ipResolverLastHost: String = ""
+
     var refreshInterval: RefreshInterval {
         get { RefreshInterval(rawValue: refreshIntervalRaw) ?? .thirtyMinutes }
         set { refreshIntervalRaw = newValue.rawValue }
