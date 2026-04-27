@@ -10,11 +10,12 @@ A lightweight native macOS menubar app that monitors your VLESS subscription usa
 
 - **Menubar Display** — See remaining days and data at a glance
 - **Detailed Popup** — Click to view total, downloaded, uploaded, remaining data with color-coded progress bars
-- **Auto Refresh** — Configurable refresh interval (10m, 30m, 1h, or manual)
-- **Customizable Menubar** — Choose display mode, data unit (MB/GB/GBz), separator, font family, font size, text color, icon emoji, and orientation
+- **Auto Refresh** — Configurable refresh interval (30s, 2m, 5m, 10m, 30m, 1h, or manual)
+- **Customizable Menubar** — 7 display modes (Data only, Days only, Data + Days, Icon + Data, Icon + Day, Icon + Data + Day, Icon + Day + Data); pick data unit (MB/GB/GBz), separator, font family, font size, text color, icon emoji, and orientation
 - **Color-Coded Indicators** — Blue (healthy), orange (moderate), red (critical) for data and time remaining
+- **Manual IP Resolver (VPN bypass)** — Reach your subscription host even when a system VPN is on: pin the host to a known IP via `/etc/hosts` and add a host route through the local gateway (auto-detected, with manual override)
 - **Launch at Login** — Start automatically when you log in
-- **Native macOS** — Built with Swift + SwiftUI, zero dependencies, lightweight
+- **Native macOS** — Built with Swift + SwiftUI, zero dependencies, lightweight, universal binary (Apple Silicon + Intel)
 - **Supports X-UI / 3X-UI** — Reads `Subscription-Userinfo` HTTP header with HTML template fallback
 
 ## Download
